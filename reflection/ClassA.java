@@ -1,6 +1,7 @@
 public final class ClassA implements java.io.Serializable, Runnable
 {
-    public ClassA() { val=3; }
+    public ClassA() { val=3; 
+    }
 
     public ClassA(int i) 
 	{
