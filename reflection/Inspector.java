@@ -202,7 +202,7 @@ private void inspectMethods(Object obj,Class ObjClass, Vector objectsToInspect,b
 
 //inspect interfaces
 
-private void inspectInterfaces(Object obj,Class ObjClass, Vector objectsToInspect,boolean recursive) {
+public void inspectInterfaces(Object obj,Class ObjClass, Vector objectsToInspect,boolean recursive) {
 	Class[] inter = ObjClass.getInterfaces();
 	//get a list of interfaces
 	System.out.printf("\nINTERFACES: " + ObjClass.getName() +"'s Interfaces: ");

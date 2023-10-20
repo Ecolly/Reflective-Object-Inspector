@@ -15,6 +15,12 @@ public class InspectorTest {
     private Inspector inspector;
     Vector objectsToInspect = new Vector();
 
+    //Interface set up 
+    interface FirstInterface{}
+    class classwithinterface implements FirstInterface{}
+    class noInterface{}
+    
+
     @BeforeEach
     public void setUp() {
         System.setOut(new PrintStream(outContent));
@@ -35,10 +41,10 @@ public class InspectorTest {
     }
 
     @Test
-    public void testInspectWithRecursion() {
+    public void testInspectRecursion() {
         List <String> list = new ArrayList<>();
-        list.add("One");
-        list.add("Two");
+        list.add("Test1");
+        list.add("Test2");
         // Recursion would inspect the strings inside the list too
         assertDoesNotThrow(() -> inspector.inspect(list, true));
     }
@@ -59,9 +65,26 @@ public class InspectorTest {
         inspector.inspectSuperClass(new Object(), Object.class, objectsToInspect,false);
         assertTrue(outContent.toString().contains("SUPERCASS: NONE"));
     }
-    // You may have more complex scenarios or objects with interfaces, etc. that you'd want to test.
-    // Consider creating dummy classes and interfaces for such test cases.
+    
+    @Test
+    public void testInspectSuperClass2() {
+        inspector.inspectSuperClass(new Object(), Testing.class, objectsToInspect,false);
+        assertTrue(outContent.toString().contains("TestClass"));
+    }
 
+    @Test
+    public void testInspectInterfaceNoInterface() {
+        noInterface obj = new noInterface();
+        inspector.inspectInterfaces(obj, obj.getClass(), new Vector(), false);
+        assertTrue(outContent.toString().contains("noInterface's Interfaces: NONE"));
+    }
+
+    @Test
+    public void testInspectInterfaceOneInterface() {
+        classwithinterface obj = new classwithinterface();
+        inspector.inspectInterfaces(obj, obj.getClass(), new Vector(), false);
+        assertTrue(outContent.toString().contains("FirstInterface"));
+    }
     static class TestClass {
         private String field1 = "test";
         public int field2 = 42;
