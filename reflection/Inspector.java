@@ -1,6 +1,6 @@
 
 /*
-Some part of the code is written by  Jordan Kidney */
+Some part of the code is based off code by  Jordan Kidney */
 //test commmit
 
 import java.util.*;
@@ -10,8 +10,7 @@ import java.lang.reflect.*;
 public class Inspector{
 //private Set<Class<?>> inspectedClasses = new HashSet<>();
 
-public void inspect(Object obj, boolean recursive)
-    {
+public void inspect(Object obj, boolean recursive){
 		Class test = obj.getClass();
 		InspectClass(obj, test,recursive);
 	}
@@ -37,7 +36,7 @@ public void InspectClass(Object obj,Class ObjClass, boolean recursive){
 		inspectConstructor( obj, ObjClass, objectsToInspect, recursive);
 		inspectSuperClass(obj, ObjClass, objectsToInspect, recursive);
 		inspectInterfaces( obj, ObjClass, objectsToInspect, recursive);
-}
+	}
 
 public void inspectFields(Object obj,Class ObjClass,Vector objectsToInspect){
 	//passes in the obj and the obj Class
@@ -86,17 +85,14 @@ public void inspectSuperClass( Object obj, Class ObjClass, Vector objectsToInspe
 	else {
 		System.out.printf("\nSUPERCASS: NONE");
 	}
-	
 }
 	//inspect field's classes
-public void inspectFieldClasses(Object obj,Class ObjClass, Vector objectsToInspect,boolean recursive)
-	{
+public void inspectFieldClasses(Object obj,Class ObjClass, Vector objectsToInspect,boolean recursive){
 	if(objectsToInspect.size() > 0 )
 		System.out.println("------------- Inspecting Field Classes ---------");
 		
 	Enumeration emu = objectsToInspect.elements();
-	while(emu.hasMoreElements())
-	    {
+	while(emu.hasMoreElements()){
 		Field field = (Field) emu.nextElement();
 		System.out.println("Inspecting Field: " + field.getName() );
 		try
@@ -105,7 +101,7 @@ public void inspectFieldClasses(Object obj,Class ObjClass, Vector objectsToInspe
 			InspectClass(obj, field.get(obj).getClass() , recursive);
 			System.out.println("---------------------------------------------");
 		    }
-		catch(Exception exp) {System.out.printf("ERROR: " + exp.getMessage()); }
+		catch(IllegalAccessException except) {System.out.printf("ERROR: " + except.getMessage()); }
 	    }
 	}
 
@@ -123,7 +119,7 @@ public void inspectFieldClasses(Object obj,Class ObjClass, Vector objectsToInspe
 
 				//constructor parameter
 				if(construct.getParameterTypes().length > 0){
-					System.out.printf("\nParameter types->");
+					System.out.printf("\nParameter types:");
 					for(Parameter pam: construct.getParameters()) {
 						System.out.printf(pam.getParameterizedType()+", ");
 					}
@@ -132,10 +128,11 @@ public void inspectFieldClasses(Object obj,Class ObjClass, Vector objectsToInspe
 					System.out.printf("\nParameter types: NONE");
 				}
 				
+				//constructor modifiers
 				
-				int mod = construct.getModifiers();
-				if(mod > 0){
-					System.out.printf("\nModifiers: " + Modifier.toString(mod)+"\n");
+				int modifier = construct.getModifiers();
+				if(modifier > 0){
+					System.out.printf("\nModifiers: " + Modifier.toString(modifier)+"\n");
 				}
 				else{
 					System.out.printf("\nModifiers: NONE");
@@ -154,13 +151,13 @@ public void inspectFieldClasses(Object obj,Class ObjClass, Vector objectsToInspe
 	//inspect methods
 private void inspectMethods(Object obj,Class ObjClass, Vector objectsToInspect,boolean recursive){
 	if(ObjClass.getDeclaredMethods().length > 0) {
-		for(Method m: ObjClass.getDeclaredMethods()) {
-			System.out.printf("\nMethod Name: "+ m.getName()+ "\n");
+		for(Method eachMethod: ObjClass.getDeclaredMethods()) {
+			System.out.printf("\nMethod Name: "+ eachMethod.getName()+ "\n");
 			
 			//Exception thrown
-			if(m.getExceptionTypes().length >0) {
+			if(eachMethod.getExceptionTypes().length >0) {
 				System.out.printf("Method Exceptions: ");
-				for(Class ex : m.getExceptionTypes()) {
+				for(Class ex : eachMethod.getExceptionTypes()) {
 					System.out.printf(ex + "\n");
 				}
 			}
@@ -169,9 +166,9 @@ private void inspectMethods(Object obj,Class ObjClass, Vector objectsToInspect,b
 			}
 		
 			//Parameter types
-			if(m.getParameterTypes().length > 0) {
+			if(eachMethod.getParameterTypes().length > 0) {
 				System.out.printf("Parameter types->");
-				for(Parameter param : m.getParameters()) {
+				for(Parameter param : eachMethod.getParameters()) {
 					System.out.printf(param.getType()+ ", ");
 				}
 			}
@@ -180,11 +177,11 @@ private void inspectMethods(Object obj,Class ObjClass, Vector objectsToInspect,b
 			}
 			
 			//return types
-			System.out.printf("\nReturn type: " + m.getReturnType().getName());
+			System.out.printf("\nReturn type: " + eachMethod.getReturnType().getName());
 			
 			//modifiers
-			int mod = m.getModifiers();
-			if(m.getModifiers() > 0){
+			int mod = eachMethod.getModifiers();
+			if(mod> 0){
 				System.out.printf("\nModifiers: " + Modifier.toString(mod)+ "\n");
 			}
 			else{
@@ -230,28 +227,27 @@ public void InspectArrays(Object obj, Class ObjClass,Vector objectsToInspect,boo
 		}
 		
 		for(int i = 0; i < arrlength; i++) {
-			Object aObj = Array.get(obj, i);
+			Object Obj1 = Array.get(obj, i);
 			
-			if (aObj == null) {
+			if (Obj1 == null) {
 				System.out.printf("null");
 			}
 			else if(compType.isArray()) {
-				System.out.printf("\nValue: " + aObj.toString());
-				InspectArrays(aObj, aObj.getClass(), objectsToInspect, recursive);
+				System.out.printf("\nValue: " + Obj1.toString());
+				InspectArrays(Obj1, Obj1.getClass(), objectsToInspect, recursive);
 			}
 			
 			else if(compType.isPrimitive()) {
-				System.out.printf("\nValue: " + aObj.toString());
+				System.out.printf("\nValue: " + Obj1.toString());
 				
 			}
 			else if(!recursive) {
-				System.out.printf("\n Value (ref): " + aObj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(aObj)));
+				System.out.printf("\n Value (ref): " + Obj1.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(Obj1)));
 			}
-			
 			else {
-				System.out.printf("\n Value (ref): " + aObj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(aObj)));
+				System.out.printf("\n Value (ref): " + Obj1.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(Obj1)));
 				System.out.printf("Inheriance \n");
-				InspectClass(aObj, aObj.getClass(), recursive);
+				InspectClass(Obj1, Obj1.getClass(), recursive);
 			}
 			
 		}
