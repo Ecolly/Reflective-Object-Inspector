@@ -76,7 +76,7 @@ public class Asst2TestDriver
     {
 	boolean rec=true;
 
-	if(args.length >= 1)fefe
+	if(args.length >= 1)
 	    {
 		if(args.length > 1) rec = Boolean.parseBoolean(args[1]); // Bug fixed
 
